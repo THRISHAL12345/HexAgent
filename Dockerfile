@@ -10,7 +10,7 @@ RUN apt-get update && \
 COPY . /app/
 
 # Install python dependencies
-# RUN pip install -r requirements.txt (if we had external deps)
+RUN pip install -r requirements.txt
 
 ENTRYPOINT ["python", "hexagent.py"]
 CMD ["--engagement", "default"]

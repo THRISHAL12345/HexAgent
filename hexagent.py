@@ -19,6 +19,9 @@ from agents.report_agent import ReportAgent
 from observability.metrics import MetricsExporter
 from observability.tracing import Tracer
 
+# Ensure logs directory exists
+os.makedirs("logs", exist_ok=True)
+
 # Configure basic logging
 logging.basicConfig(
     level=logging.INFO,
@@ -33,6 +36,7 @@ logger = logging.getLogger("hexagent")
 def main():
     parser = argparse.ArgumentParser(description="HexAgent Autonomous Security Researcher")
     parser.add_argument("--engagement", type=str, required=True, help="Engagement ID (e.g. eng-2025-042)")
+    parser.add_argument("--dry-run", action="store_true", help="Initialize the system and exit immediately (for CI/CD testing)")
     args = parser.parse_args()
     
     engagement_id = args.engagement
@@ -79,8 +83,13 @@ def main():
 
     logger.info("System Initialized. HexAgent is ready.")
     
+    if args.dry_run:
+        logger.info("Dry run complete. Exiting.")
+        return
+
     # 8. Start loop if in executing mode (In a real implementation, this would be asynchronous/threaded)
     try:
+        import time
         # Mock loop execution
         while state_machine.current_state in ["PLANNING", "EXECUTING", "WAITING", "VERIFYING", "REPLANNING"]:
             task = task_queue.dequeue_ready()
@@ -92,6 +101,7 @@ def main():
                     state_machine.transition("SUMMARIZING", "queue.empty")
                     state_machine.transition("DONE", "all_phases.complete")
                     break
+                time.sleep(1)
     except KeyboardInterrupt:
         logger.info("HexAgent shutting down gracefully...")
         supervisor.on_shutdown()
