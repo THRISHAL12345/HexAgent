@@ -1,0 +1,78 @@
+[agent]
+name              = "HexAgent"
+version           = "2.0.0"
+workspace_root    = "./workspaces"
+log_level         = "INFO"          # DEBUG | INFO | WARN | ERROR
+audit_log         = "./logs/audit.log"
+events_log        = "./logs/events.jsonl"
+auto_commit       = true
+
+[llm]
+provider          = "ollama"
+base_url          = "http://localhost:11434"
+model             = "qwen2.5-coder:7b-instruct"
+context_len       = 32768
+temperature       = 0.2
+top_p             = 0.9
+seed              = 42
+
+[llm.fast]
+model             = "codestral:22b"
+temperature       = 0.1
+
+[llm.fallback]
+model             = "qwen2.5-coder:32b"
+trigger_on        = ["context_overflow", "tool_parse_failure", "low_confidence"]
+
+[llm.embeddings]
+model             = "nomic-embed-text"
+
+[context]
+total_budget      = 28000
+system_prompt     = 2000
+task_context      = 3000
+recent_findings   = 5000
+rag_results       = 4000
+tool_docs         = 2000
+working_memory    = 8000
+scope_summary     = 500
+emergency_reserve = 3500
+compress_interval = 8000        # tokens before working memory compression
+
+[tools]
+docker_network    = "tool-net"
+scan_rate_limit   = 1000        # packets/sec shared across all network tools
+http_user_agent   = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/125.0.0.0"
+wordlist_dir      = "./tools/wordlists"
+timeout_default   = 300
+
+[agents]
+max_leaf_agents   = 6
+max_network_tools = 4
+max_cpu_tools     = 8
+
+[memory]
+vector_store      = "chromadb"   # "chromadb" | "qdrant"
+chromadb_url      = "http://localhost:8000"
+embeddings_model  = "nomic-embed-text"
+max_past_engagements = 20
+
+[reporting]
+output_formats    = ["markdown", "html", "json"]
+cvss_version      = "3.1"
+auto_generate     = true
+
+[escalation]
+response_timeout  = 600          # seconds; hard triggers auto-deny, soft triggers proceed
+channel           = "terminal"   # "terminal" | "signal" | "matrix"
+
+[opsec]
+stealth_mode      = false
+randomise_headers = true
+suppress_history  = true
+sign_commits      = true
+
+[observability]
+metrics_port      = 8080
+otlp_endpoint     = "http://localhost:4317"
+tracing_enabled   = true

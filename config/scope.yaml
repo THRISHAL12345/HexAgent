@@ -1,0 +1,29 @@
+engagement:
+  id: "eng-2025-042"
+  name: "Acme Corp External Pentest"
+  type: "black-box"
+  started: "2025-08-01T09:00:00Z"
+  deadline: "2025-08-15T17:00:00Z"
+  objectives:
+    - "Demonstrate RCE on any production web server"
+    - "Achieve domain admin or equivalent on internal AD"
+    - "Access the finance database (10.0.1.50)"
+
+in_scope:
+  ip_ranges:
+    - "203.0.113.0/24"
+    - "198.51.100.10-198.51.100.20"
+  domains:
+    - "*.acme.com"
+    - "acme.io"
+  exclusions:
+    - "203.0.113.1"
+    - "mail.acme.com"
+
+rules_of_engagement:
+  allowed_techniques: ["network_scanning","web_testing","exploitation","post_exploitation"]
+  disallowed_techniques: ["dos","ddos","social_engineering","physical"]
+  max_scan_rate: 1000
+  testing_hours: "09:00-18:00 UTC"
+  destructive_payloads: false
+  data_exfiltration: false
