@@ -1,0 +1,23 @@
+[tool]
+name         = "nmap"
+version      = "7.95"
+description  = "Network port scanner with service/OS detection and NSE scripting"
+category     = "recon"
+requires_root = true
+network_facing = true
+destructive  = false
+docker_image = "instrumentisto/nmap:7.95"
+
+[input]
+targets      = { type = "string", required = true }
+flags        = { type = "string", default = "-sV -sC -T3" }
+output_format = { type = "string", enum = ["xml", "json", "normal"], default = "xml" }
+output_path  = { type = "string", required = true }
+
+[output]
+hosts_found  = { type = "integer" }
+hosts        = { type = "array", items = "Host" }
+services     = { type = "array", items = "Service" }
+
+[keywords]
+keywords = ["port scan", "service detection", "os fingerprint", "nse", "network discovery"]
